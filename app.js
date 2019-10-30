@@ -35,6 +35,8 @@ app.get('/',function(req,res) {
 app.post('/register', function (req, res) {//注册
   if(req.body.name == '' || req.body.password == '') {
     res.json(state.login.noString);
+    console.log(233)
+    return;
   }
   if (isOk(req)) {
     pool.getConnection(function (err, connection) {
