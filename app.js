@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 app.post('/screen', function (req, res) {
-  const obj = ["http://yangyangcsy.cn/img/交流.png", "http://yangyangcsy.cn/img/团队.png", "http://yangyangcsy.cn/img/新闻.png"]
+  const obj = ["http://yangyangcsy.cn/img/交流.png", "http://yangyangcsy.cn/img/团队.png", "http://yangyangcsy.cn/img/数据.png"]
   res.json(obj)
 })
 
