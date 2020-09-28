@@ -1,118 +1,33 @@
 var express = require('express');
-var app = express();
-var pool = require('./db/config');
-var dbConfig = require('./db/sql');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 var bodyParser = require('body-parser');
-var state = require('./state');
 
-app.use('/', express.static('dist'))
+var app = express();
+app.use('/api', createProxyMiddleware({
+  target: 'http://v.juhe.cn', changeOrigin: true, pathRewrite: {
+    '^/api/': '/', // rewrite path
+  },
+}));
+app.use('/', express.static('static'))
 app.use(bodyParser.urlencoded({ extended: false }));
 
-function isOk(req) {
-  var reg = /[`~!@#$%^&*()_+<>?:{},.\/;'[\]]/im;//拦截特殊字符
-  var reg2 = /[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
-  return !reg.test(req.body.name) && !reg.test(req.body.password) && !reg2.test(req.body.name) && !reg2.test(req.body.password);
-}
 
-// function connectionDb(callback) {
-//   pool.getConnection(function (err, connection) {
-//     if (err) {
-//       console.log(err);
-//       var data = {
-//         code: '03',
-//         message: '数据库连接错误'
-//       }
-//       res.json(data);
-//       return;
-//     }
-//     connection.query()
-//     connection.release();
-//   })
-// }
-app.get('/',function(req,res) {
-  res.sendFile(__dirname + "/" + "dist/index.html")
+
+app.post('/screen', function (req, res) {
+  const obj = ["http://yangyangcsy.cn/img/交流.png", "http://yangyangcsy.cn/img/团队.png", "http://yangyangcsy.cn/img/新闻.png"]
+  res.json(obj)
 })
-app.post('/register', function (req, res) {//注册
-  if(req.body.name == '' || req.body.password == '') {
-    res.json(state.login.noString);
-    console.log(233)
-    return;
-  }
-  if (isOk(req)) {
-    pool.getConnection(function (err, connection) {
-      if (err) {
-        console.log(err);
-        res.json(state.login.err);
-        return;
-      }
-      var query = [];
-      query.push(req.body.name);
-      query.push(req.body.password);
-      connection.query(dbConfig.insert, query, function (err, result) {
-        if (err) {
-          console.log(err.message);
-          res.json(state.login.faild);
-          return
-        } else {
-          res.json(state.login.success);
-        }
-      })
-      connection.release();
-    })
-  } else {
-    res.json(state.login.err2);
-    res.end();
-  }
-});
 
-app.post('/login', function (req, res) {
-  if (isOk(req)) {
-    pool.getConnection(function (err, connection) {
-      if (err) {
-        console.log(err.message);
-        res.json(state.login.err);
-        return;
-      }
-      var query = [];
-      query.push(req.body.name);
-      console.log(query)
-      connection.query(dbConfig.getUserById,query,function(err,result) {
-    console.log(result)
-        if(err) {
-          console.log(err.message);
-          res.json(state.login.faild);
-          return
-        }else {
-          if(!result.length == 0 && result[0].password == req.body.password) {
-            res.json(state.login.logSuccess);
-          }else {
-            res.json(state.login.err3)
-          }
-        }
-      });
-      connection.release();
-    })
-  } else {
-    res.json(state.login.err2);
-    res.end();
-  }
-});
+app.post('/indexModle', function (req, res) {
+  const obj = [
+    { name: "天气预报", src: "http://yangyangcsy.cn/img/天气.png" },
+    { name: "轻松一刻", src: "http://yangyangcsy.cn/img/笑哭.png" },
+    { name: "今日头条", src: "http://yangyangcsy.cn/img/新闻.png" },
+    { name: "驾考宝典", src: "http://yangyangcsy.cn/img/车.png" },
+  ]
+  res.json(obj)
+})
 
 app.listen(80, function () {
   console.log('success');
 });
-
-// connection.connect();
-
-
-// connection.query(dbConfig.insert,['csy','123456'],function (err,result) {
-//     if(err) {
-//         console.log(err.message);
-//         return;
-//     }
-//     console.log('----------------SELECT--------------');
-//     console.log(result);
-//     console.log('-------------------------------------\n\n');
-// });
-
-// connection.end();
