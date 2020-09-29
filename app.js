@@ -1,6 +1,13 @@
 var express = require('express');
+const fs = require('fs')
+const https = require("https")
 const { createProxyMiddleware } = require('http-proxy-middleware');
 var bodyParser = require('body-parser');
+
+const httpsOption = {
+  key: fs.readFileSync("./ssl/4566344_yangyangcsy.cn.key"),
+  cert: fs.readFileSync("./ssl/4566344_yangyangcsy.cn.pem")
+}
 
 var app = express();
 app.use('/api', createProxyMiddleware({
@@ -31,3 +38,8 @@ app.post('/indexModle', function (req, res) {
 app.listen(80, function () {
   console.log('success');
 });
+
+const server = https.createServer(httpsOption, app)
+server.listen(443,function(){
+	console.log('app is running at port 80');
+})
