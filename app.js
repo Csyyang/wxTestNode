@@ -22,7 +22,7 @@ app.use('/position', createProxyMiddleware({
 }));
 app.use('/weather', createProxyMiddleware({
   target: 'http://apis.juhe.cn', changeOrigin: true, pathRewrite: {
-    '^/position/': '/', // rewrite path
+    '^/weather/': '/', // rewrite path
   },
 }));
 app.use('/', express.static('static'))
