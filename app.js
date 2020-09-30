@@ -20,6 +20,11 @@ app.use('/position', createProxyMiddleware({
     '^/position/': '/', // rewrite path
   },
 }));
+app.use('/weather', createProxyMiddleware({
+  target: 'http://apis.juhe.cn', changeOrigin: true, pathRewrite: {
+    '^/position/': '/', // rewrite path
+  },
+}));
 app.use('/', express.static('static'))
 app.use(bodyParser.urlencoded({ extended: false }));
 
