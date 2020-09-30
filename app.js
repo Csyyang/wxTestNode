@@ -16,7 +16,7 @@ app.use('/api', createProxyMiddleware({
   },
 }));
 app.use('/position', createProxyMiddleware({
-  target: 'https://apis.map.qq.com', changeOrigin: false, pathRewrite: {
+  target: 'https://apis.map.qq.com', changeOrigin: true, pathRewrite: {
     '^/position/': '/', // rewrite path
   },
 }));
