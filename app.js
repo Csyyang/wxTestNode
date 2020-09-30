@@ -15,6 +15,11 @@ app.use('/api', createProxyMiddleware({
     '^/api/': '/', // rewrite path
   },
 }));
+app.use('/position', createProxyMiddleware({
+  target: 'https://apis.map.qq.com', changeOrigin: true, pathRewrite: {
+    '^/position/': '/', // rewrite path
+  },
+}));
 app.use('/', express.static('static'))
 app.use(bodyParser.urlencoded({ extended: false }));
 
